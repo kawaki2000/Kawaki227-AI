@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAWAKI227</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --gold:#E38F09;
+    --cyan:#00f3ff;
+    --accent:#ff0055;
+    --bg:#020205;
+    --glass:rgba(255,255,255,.08);
+    --border:rgba(0,243,255,.35);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    background:
+        radial-gradient(circle at top,#070716,#000),
+        linear-gradient(90deg,rgba(0,243,255,.03) 1px,transparent 1px),
+        linear-gradient(rgba(0,243,255,.03) 1px,transparent 1px);
+    background-size:cover,40px 40px,40px 40px;
+    font-family:'Rajdhani',sans-serif;
+    color:#fff;
+    height:100dvh;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+/* HEADER */
+header{
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(0,0,0,.8);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid var(--border);
+}
+
+.brand{
+    font-family:'Orbitron',sans-serif;
+    color:var(--gold);
+    text-shadow:0 0 15px var(--gold);
+}
+
+.status{
+    font-size:.75rem;
+    color:var(--cyan);
+}
+
+/* PROFILE */
+.profile{
+    display:flex;
+    justify-content:center;
+    margin:15px 0;
+}
+
+.profile img{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    border:2px solid var(--cyan);
+    box-shadow:
+        0 0 20px rgba(0,243,255,.5),
+        inset 0 0 15px rgba(0,243,255,.3);
+    object-fit:cover;
+}
+
+/* CHAT */
+.chat{
+    flex:1;
+    padding:18px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.msg{
+    max-width:85%;
+    padding:14px 18px;
+    border-radius:16px;
+    line-height:1.5;
+    animation:fade .25s ease;
+    backdrop-filter:blur(12px);
+}
+
+.ai{
+    align-self:flex-start;
+    background:linear-gradient(145deg,rgba(0,243,255,.15),rgba(0,0,0,.4));
+    border:1px solid var(--border);
+    color:var(--gold);
+    box-shadow:0 0 25px rgba(0,243,255,.25);
+}
+
+.user{
+    align-self:flex-end;
+    background:linear-gradient(145deg,rgba(227,143,9,.25),rgba(0,0,0,.4));
+    border:1px solid var(--gold);
+    color:var(--gold);
+    text-align:right;
+    box-shadow:0 0 25px rgba(227,143,9,.35);
+}
+
+/* INPUT */
+.input-area{
+    padding:12px;
+    background:rgba(0,0,0,.85);
+    border-top:1px solid var(--border);
+    display:flex;
+    gap:8px;
+}
+
+input{
+    flex:1;
+    padding:12px 18px;
+    border-radius:30px;
+    border:1px solid var(--border);
+    background:#000;
+    color:var(--gold);
+    outline:none;
+}
+
+button{
+    width:46px;height:46px;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    background:transparent;
+    color:var(--gold);
+    cursor:pointer;
+    transition:.25s;
+}
+
+button:hover{
+    background:var(--gold);
+    color:#000;
+    box-shadow:0 0 20px var(--gold);
+}
+
+button.listening{
+    background:var(--accent);
+    border-color:var(--accent);
+    animation:pulseRed 1s infinite;
+}
+
+/* ANIMATIONS */
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+@keyframes pulseRed{
+    0%{box-shadow:0 0 0 0 rgba(255,0,85,.6)}
+    70%{box-shadow:0 0 0 14px rgba(255,0,85,0)}
+    100%{box-shadow:0 0 0 0 rgba(255,0,85,0)}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">KAWAKI227 AI</div>
+    <div class="status" id="status">● ONLINE</div>
+</header>
+
+<div class="profile">
+    <img src="https://i.pravatar.cc/300?img=12">
+</div>
+
+<div class="chat" id="chat">
+    <div class="msg ai"><b>KAWAKI227:</b><br>KAWAKI227 c'est quoi t'a question Bro 🙂🚀</div>
+</div>
+
+<div class="input-area">
+    <input id="input" placeholder="c'est quoi free fire 🤣...">
+    <button id="micBtn">🎤</button>
+    <button onclick="send()">➤</button>
+</div>
+
+<script>
+const chat=document.getElementById('chat');
+const input=document.getElementById('input');
+const statusEl=document.getElementById('status');
+const micBtn=document.getElementById('micBtn');
+
+/* RANDOM DP */
+document.querySelector('.profile img').src =
+`https://i.pravatar.cc/300?img=${Math.floor(Math.random()*70)+1}`;
+
+function addMsg(text,type){
+    const div=document.createElement('div');
+    div.className='msg '+type;
+    div.innerText=text;
+    chat.appendChild(div);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+/* 🔇 VOIX DÉSACTIVÉE */
+function speak(text){
+    return;
+}
+
+async function send(){
+    const text=input.value.trim();
+    if(!text) return;
+
+    addMsg(text,'user');
+    input.value='';
+    statusEl.innerText='● THINKING';
+
+    const fd=new FormData();
+    fd.append('text',text);
+
+    try{
+        const res=await fetch('https://bj-tricks-ai.vercel.app/chat',{
+            method:'POST',
+            body:fd
+        });
+        const data=await res.json();
+        const reply=data.result||'No response';
+        addMsg(reply,'ai');
+        speak(reply);
+    }catch(e){
+        addMsg('Network Error','ai');
+    }
+
+    statusEl.innerText='● ONLINE';
+}
+
+/* MIC */
+const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SpeechRecognition){
+    const rec=new SpeechRecognition();
+    rec.lang='en-US';
+    rec.onstart=()=>{
+        micBtn.classList.add('listening');
+        statusEl.innerText='● LISTENING';
+    };
+    rec.onend=()=>{
+        micBtn.classList.remove('listening');
+        statusEl.innerText='● ONLINE';
+    };
+    rec.onresult=e=>{
+        input.value=e.results[0][0].transcript;
+        setTimeout(send,400);
+    };
+    micBtn.onclick=()=>rec.start();
+}else{
+    micBtn.style.display='none';
+}
+</script>
+
+</body>
+</html>
